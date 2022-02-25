@@ -1,26 +1,32 @@
 class Solution {
 public:
-  int compareVersion( const string& version1, const string& version2 ) {
-    const int n1 = version1.size(), n2 = version2.size();
-
-    for ( int i = 0, j = 0; i < n1 || j < n2; ++i, ++j ) {
-      const int istart = i, jstart = j;
-      for ( ; i < n1 && version1[ i ] != '.'; ++i )
-        ;
-      for ( ; j < n2 && version2[ j ] != '.'; ++j )
-        ;
-      const int num1 = i == istart
-                         ? 0
-                         : stoi( version1.substr( istart, i - istart ) ),
-                num2 = j == jstart
-                         ? 0
-                         : stoi( version2.substr( jstart, j - jstart ) );
-      if ( num1 > num2 ) {
-        return 1;
-      } else if ( num1 < num2 ) {
-        return -1;
-      }
+    int compareVersion(string v1, string v2) {
+	// iterators for v1 and v2 respectively 
+        int i = 0 ; 
+        int j = 0 ; 
+        while(i<v1.length() || j<v2.length()){
+            // convert the string into int and store in x and y respectivley 
+			// advantage : problem of trailing 0's eliminated 
+			int x = 0 ;
+            int y = 0 ; 
+			
+			// index out of bound check. If not then convert that part into int 
+            while(i < v1.length() && v1[i] != '.'){
+                x = x*10 + v1[i]-'0' ;  i++ ; 
+            }
+			
+			// same as above 
+            while(j < v2.length() &&  v2[j] != '.'){
+                y = y*10 + v2[j]-'0' ; j++ ; 
+            }
+			
+			// currently i and j pointing at '.' increment it for pointing to next part  
+            i++ ; j++ ; 
+		 
+			
+            if(x < y) return -1 ; 
+            else if(x>y) return 1 ; 
+        }
+        return 0 ; 
     }
-    return 0;
-  }
 };
