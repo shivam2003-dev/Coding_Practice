@@ -1,40 +1,42 @@
 class Solution {
-    private int[][] cache;
-    private int endingMask;
-    
-    public int dp(int node, int mask, int[][] graph) {
-        if (cache[node][mask] != 0) {
-            return cache[node][mask];
-        }
-        if ((mask & (mask - 1)) == 0) {
-            // Base case - mask only has a single "1", which means
-            // that only one node has been visited (the current node)
+    public int shortestPathLength(int[][] graph) {
+        if (graph.length == 1) {
             return 0;
         }
         
-        cache[node][mask] = Integer.MAX_VALUE - 1; // Avoid infinite loop in recursion
-        for (int neighbor: graph[node]) {
-            if ((mask & (1 << neighbor)) != 0) {
-                int alreadyVisited = dp(neighbor, mask, graph);
-                int notVisited = dp(neighbor, mask ^ (1 << node), graph);
-                int betterOption = Math.min(alreadyVisited, notVisited);
-                cache[node][mask] = Math.min(cache[node][mask], 1 + betterOption);
-            }
-        }
-        
-        return cache[node][mask];
-    }
-    
-    public int shortestPathLength(int[][] graph) {
         int n = graph.length;
-        endingMask = (1 << n) - 1;
-        cache = new int[n + 1][endingMask + 1];
+        int endingMask = (1 << n) - 1;
+        boolean[][] seen = new boolean[n][endingMask];
+        ArrayList<int[]> queue = new ArrayList<>();
         
-        int best = Integer.MAX_VALUE;
-        for (int node = 0; node < n; node++) {
-            best = Math.min(best, dp(node, endingMask, graph));
+        for (int i = 0; i < n; i++) {
+            queue.add(new int[] {i, 1 << i});
+            seen[i][1 << i] = true;
         }
         
-        return best;
+        int steps = 0;
+        while (!queue.isEmpty()) {
+            ArrayList<int[]> nextQueue = new ArrayList<>();
+            for (int i = 0; i < queue.size(); i++) {
+                int[] currentPair = queue.get(i);
+                int node = currentPair[0];
+                int mask = currentPair[1];
+                for (int neighbor : graph[node]) {
+                    int nextMask = mask | (1 << neighbor);
+                    if (nextMask == endingMask) {
+                        return 1 + steps;
+                    }
+                    
+                    if (!seen[neighbor][nextMask]) {
+                        seen[neighbor][nextMask] = true;
+                        nextQueue.add(new int[] {neighbor, nextMask});
+                    }
+                }
+            }
+            steps++;
+            queue = nextQueue;
+        }
+        
+        return -1;
     }
 }
