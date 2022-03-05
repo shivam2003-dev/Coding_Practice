@@ -1,24 +1,42 @@
 class Solution {
     public int deleteAndEarn(int[] nums) {
-        HashMap<Integer, Integer> points = new HashMap<>();
         int maxNumber = 0;
+        HashMap<Integer, Integer> points = new HashMap<>();
         
-        // Precompute how many points we gain from taking an element
         for (int num : nums) {
             points.put(num, points.getOrDefault(num, 0) + num);
             maxNumber = Math.max(maxNumber, num);
         }
         
-        // Declare our array along with base cases
-        int[] maxPoints = new int[maxNumber + 1];
-        maxPoints[1] = points.getOrDefault(1, 0);
+        int twoBack = 0;
+        int oneBack = 0;
+        int n = points.size();
         
-        for (int num = 2; num < maxPoints.length; num++) {
-            // Apply recurrence relation
-            int gain = points.getOrDefault(num, 0);
-            maxPoints[num] = Math.max(maxPoints[num - 1], maxPoints[num - 2] + gain);
+        if (maxNumber < n + n * Math.log(n) / Math.log(2)) {
+            oneBack = points.getOrDefault(1, 0);
+            for (int num = 2; num <= maxNumber; num++) {
+                int temp = oneBack;
+                oneBack = Math.max(oneBack, twoBack + points.getOrDefault(num, 0));
+                twoBack = temp;
+            }
+        } else {
+            List<Integer> elements = new ArrayList<Integer>(points.keySet());
+            Collections.sort(elements);
+            oneBack = points.get(elements.get(0));
+        
+            for (int i = 1; i < elements.size(); i++) {
+                int currentElement = elements.get(i);
+                int temp = oneBack;
+                if (currentElement == elements.get(i - 1) + 1) {
+                    oneBack = Math.max(oneBack, twoBack + points.get(currentElement));
+                } else {
+                    oneBack += points.get(currentElement);
+                }
+
+                twoBack = temp;
+            }
         }
         
-        return maxPoints[maxNumber];
+        return oneBack;
     }
 }
