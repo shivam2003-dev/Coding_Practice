@@ -7,25 +7,25 @@ using namespace std;
  // } Driver Code Ends
 // User function Template for C++
 
-class Solution{
-public:
+class Solution {
+    public : 
     int maxdep=0;
-    
-    void dfs(int nn,int par,vector<vector<int>> &adj,int dep){
-        maxdep = max(maxdep,dep);
-        for(int ne:adj[nn]){
-            if(ne!=par){
-                dfs(ne,nn,adj,dep+1);
+    void dfs ( int nn , int par , vector<vector<int>> &adj , int dep ){
+        maxdep=max(maxdep , dep );
+        for ( int ne : adj[nn]){
+            if(ne!=par) {
+                dfs(ne ,nn,adj ,dep+1) ;
             }
         }
+        
     }
     
-    int partyHouse(int N, vector<vector<int>> &adj){
-        int ans = 1e9;
-        for(int i=1;i<=N;i++){
+    int partyHouse ( int N , vector<vector<int>> &adj) {
+        int ans=1e9;
+        for(int i=1 ; i<=N ;i++){
             maxdep=0;
-            dfs(i,-1,adj,0);
-            ans = min(ans,maxdep);
+            dfs(i , -1 ,adj ,0);
+            ans=min(ans,maxdep);
         }
         return ans;
     }
