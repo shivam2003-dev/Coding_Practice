@@ -10,21 +10,24 @@ using namespace std;
 class Solution{
 public:
     int nthItem(int L1, int L2, int A[], int B[], int N)
-   {
-       // code here
-       set<int>s;
-       for(int i = 0;i<L1;i++){
-           for(int j = 0;j<L2;j++){
-               s.insert(A[i]+B[j]);
-           }
-       }
-       N--;
-       if(N>s.size()) return -1;
-       set<int>:: iterator it;
-       it = s.begin();
-       while(N--) it++;
-       return *it;
-   }
+    {
+        // Insert each pair sum into set. Note that a set
+    	// stores elements in sorted order and unique elements
+    	set<int> s;
+    	for (int i = 0 ; i < L1; i++)
+    		for (int j = 0; j < L2; j++)
+    			s.insert(A[i] + B[j]);
+    
+    	// If set has less than N elements
+    	if (s.size() < N)
+    	return -1;
+    
+    	// Find N'tb item in set and return it
+    	set<int>::iterator it = s.begin();
+    	for (int count = 1;count < N; count++)
+    		it++;
+    	return *it;
+    }
 };
 
 // { Driver Code Starts.
